@@ -4,29 +4,12 @@
 # I couldn't figure out how to do it programmatically.
 
 # Colors
-white() {
-    tput sgr 0
-}
+function white  { tput sgr 0; }
+function cyan   { tput setaf 6; echo -en $1; white; }
+function green  { tput setaf 2; echo -en $1; white; }
+function yellow { tput setaf 3; echo -en $1; white; }
 
-cyan() {
-    tput setaf 6
-    echo -en $1
-    white
-}
-
-green() {
-    tput setaf 2
-    echo -en $1
-    white
-}
-
-yellow() {
-    tput setaf 3
-    echo -en $1
-    white
-}
-
-cpu() {
+function cpu {
     if [[ $(lscpu | grep GenuineIntel) ]]; then
         echo -n "intel"
     elif [[ $(lscpu | grep AuthenticAMD) ]]; then
@@ -34,12 +17,19 @@ cpu() {
     fi
 }
 
-configure_pacman() {
+function configure_pacman {
     cyan "Configuring Pacman\n"
     green "  --> Enabling colored output\n";          sed '/Color/s/^#//g' -i /etc/pacman.conf
     green "  --> Enabling verbose package listing\n"; sed '/VerbosePkgLists/s/^#//g' -i /etc/pacman.conf
     green "  --> Enabling parallel downloads\n";      sed '/ParallelDownloads/s/^#//g' -i /etc/pacman.conf
     green "  --> Enabling multilib repo\n";           sed '93,94 s/^#//' -i /etc/pacman.conf
+}
+
+function launch {
+    cp $HOME/$1 /mnt
+    chmod +x /mnt/$1
+    arch-chroot /mnt ./$1 $2
+    rm "/mnt/$1"
 }
 
 # Select a device
@@ -80,10 +70,21 @@ pacstrap -i /mnt base base-devel linux linux-firmware $(cpu)-ucode man-db man-pa
 cyan "Generating the file system table\n"
 genfstab -U /mnt >> /mnt/etc/fstab # Generate the file system table
 
-# Configuration
-cp ~/config.sh /mnt
-chmod +x /mnt/config.sh
-arch-chroot /mnt ./config.sh $device
+launch "config.sh" # Configuration
 
-# Cleanup
-rm /mnt/config.sh
+# Desktop installation (optional)
+yellow "Which desktop do you want to install?\n"
+green "  --> [g] GNOME\n"
+green "  --> [kx] KDE Plasma (X.Org)\n"
+green "  --> [kw] KDE Plasma (Wayland)\n"
+green "  --> [n]  No desktop\n"
+echo -n "> "
+read desktop
+
+case $desktop in
+    g) launch gnome.sh ;;
+    kx) launch kde.sh xorg ;;
+    kw) launch kde.sh wayland ;;
+esac
+
+green "\nInstallation is complete!\nType in 'umount -R /mnt', and reboot.\n" 

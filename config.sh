@@ -85,5 +85,3 @@ sed -i 's/ \<quiet\>//g' /etc/default/grub                                      
 sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\"$/ resume=UUID=$(blkid -s UUID -o value ${device}2)\"/" /etc/default/grub
 
 grub-mkconfig -o /boot/grub/grub.cfg # Generate the config file
-
-green "Installation is complete!\nType in 'umount -R /mnt', and reboot.\n" 
