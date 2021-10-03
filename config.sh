@@ -3,29 +3,12 @@
 device=$1
 
 # Colors
-white() {
-    tput sgr 0
-}
+function white  { tput sgr 0; }
+function cyan   { tput setaf 6; echo -en $1; white; }
+function green  { tput setaf 2; echo -en $1; white; }
+function yellow { tput setaf 3; echo -en $1; white; }
 
-cyan() {
-    tput setaf 6
-    echo -en $1
-    white
-}
-
-green() {
-    tput setaf 2
-    echo -en $1
-    white
-}
-
-yellow() {
-    tput setaf 3
-    echo -en $1
-    white
-}
-
-configure_pacman() {
+function configure_pacman {
     cyan "Configuring Pacman\n"
     green "  --> Enabling colored output\n";          sed '/Color/s/^#//g' -i /etc/pacman.conf
     green "  --> Enabling verbose package listing\n"; sed '/VerbosePkgLists/s/^#//g' -i /etc/pacman.conf
