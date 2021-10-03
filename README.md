@@ -8,9 +8,9 @@ Currently these scripts can do a base install Arch Linux with my preferred confi
 
 ## TODOs
 ### Things that are definitely needed
-- [ ] Desktops (X.Org + Wayland):
-  - [ ] KDE
-  - [ ] GNOME
+- [x] Desktops (X.Org + Wayland):
+  - [x] KDE
+  - [x] GNOME
 - [ ] Programs for everyday use
 - [ ] Development programs
 
