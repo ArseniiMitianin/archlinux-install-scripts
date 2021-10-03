@@ -87,4 +87,4 @@ case $desktop in
     kw) launch kde.sh wayland ;;
 esac
 
-green "\nInstallation is complete!\nType in 'umount -R /mnt', and reboot.\n" 
+green "\nInstallation is complete!\nType in 'umount -R /mnt', and reboot.\n"
