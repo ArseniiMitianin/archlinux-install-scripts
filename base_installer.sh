@@ -1,7 +1,6 @@
 #!/bin/zsh
 
-# Launch this script on a UEFI system while being connected to the Internet
-# I couldn't figure out how to do it programmatically.
+# Launch this script on a UEFI system
 
 # Colors
 function white  { tput sgr 0; }
@@ -31,6 +30,28 @@ function launch {
     arch-chroot /mnt ./$1 $2
     rm "/mnt/$1"
 }
+
+# Connect to the Internet
+if [[ $(ip a | grep enp) ]]; then
+    green "Found an Ethernet connection!\n"
+fi
+
+if [[ ! $(ip a | grep enp) && $(ip a | egrep '(wlan|wlp)') ]]; then
+    green "Found a Wi-Fi device on your machine\n"
+    yellow "Select a network device"
+    iwctl device list
+    echo -n "> "
+    read net_device
+
+    yellow "Which network to connect to?\n"
+    iwctl station $net_device get-network
+    echo -n "> "
+    read network
+
+    if [[ $(iwctl station ${net_device} connect ${network}) ]]; then
+        green "Successfully connected to ${network}!"
+    fi
+fi
 
 # Select a device
 fdisk -l
