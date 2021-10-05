@@ -65,6 +65,6 @@ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --re
 sed -i 's/ \<quiet\>//g' /etc/default/grub                                            # Disable quiet boot
 
 # Set up suspend-on-disk (hibernation)
-sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\"$/ resume=UUID=$(blkid -s UUID -o value ${device}2)\"/" /etc/default/grub
+sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\" ?$/ resume=UUID=$(blkid -s UUID -o value ${device}2)\"/" /etc/default/grub
 
 grub-mkconfig -o /boot/grub/grub.cfg # Generate the config file
