@@ -33,23 +33,23 @@ function launch {
 
 # Connect to the Internet
 if [[ $(ip a | grep enp) ]]; then
-    green "Found an Ethernet connection!\n"
+    green "Found an Ethernet connection!\n\n"
 fi
 
 if [[ ! $(ip a | grep enp) && $(ip a | egrep '(wlan|wlp)') ]]; then
     green "Found a Wi-Fi device on your machine\n"
-    yellow "Select a network device"
+    yellow "Select a network device\n"
     iwctl device list
     echo -n "> "
     read net_device
 
-    yellow "Which network to connect to?\n"
+    yellow "\nWhich network to connect to?\n"
     iwctl station $net_device get-network
     echo -n "> "
     read network
 
     if [[ $(iwctl station ${net_device} connect ${network}) ]]; then
-        green "Successfully connected to ${network}!"
+        green "\nSuccessfully connected to ${network}!\n"
     fi
 fi
 
