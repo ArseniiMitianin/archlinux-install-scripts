@@ -31,9 +31,9 @@ packages+=(
     'gnome' 'gnome-tweaks' 'gnome-shell-extensions' 'gnome-software-packagekit-plugin' 
     'vivaldi' 'vivaldi-ffmpeg-codecs'
 )
-pacman -Rns epiphany
 
 # Install and enable stuff
 pacman -S $(echo ${packages[@]})
+pacman -Rns epiphany
 green "\n  --> Enabling GNOME Display Manager\n"
 systemctl enable gdm.service
