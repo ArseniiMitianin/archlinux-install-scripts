@@ -4,9 +4,10 @@
 
 # Colors
 function white  { tput sgr 0; }
-function cyan   { tput setaf 6; echo -en $1; white; }
+function red    { tput setaf 1; echo -en $1; white; }
 function green  { tput setaf 2; echo -en $1; white; }
 function yellow { tput setaf 3; echo -en $1; white; }
+function cyan   { tput setaf 6; echo -en $1; white; }
 
 function cpu {
     if [[ $(lscpu | grep GenuineIntel) ]]; then
@@ -32,11 +33,11 @@ function launch {
 }
 
 # Connect to the Internet
-if [[ $(ip a | grep enp) ]]; then
-    green "Found an Ethernet connection!\n\n"
-fi
-
-if [[ ! $(ip a | grep enp) && $(ip a | egrep '(wlan|wlp)') ]]; then
+if [[ $(ip a | egrep 'enp.*:.*state UP')]]; then
+    green "\nFound an Ethernet connection!\n\n"
+elif [[ $(ip a | egrep '(wlan|wlp).*:.*state UP') ]]; then
+    green "\nFound a Wi-Fi connection!\n\n"
+elif [[ $(ip a | egrep 'enp.*:.*state DOWN') && $(ip a | egrep '(wlan|wlp).*:.*state DOWN') ]]; then
     green "Found a Wi-Fi device on your machine\n"
     yellow "Select a network device\n"
     iwctl device list
@@ -44,13 +45,16 @@ if [[ ! $(ip a | grep enp) && $(ip a | egrep '(wlan|wlp)') ]]; then
     read net_device
 
     yellow "\nWhich network to connect to?\n"
-    iwctl station $net_device get-network
+    iwctl station $net_device get-networks
     echo -n "> "
     read network
 
-    if [[ $(iwctl station ${net_device} connect ${network}) ]]; then
-        green "\nSuccessfully connected to ${network}!\n"
+    if iwctl station ${net_device} connect ${network}; then
+        green "\nSuccessfully connected to ${network}!\n\n"
     fi
+else
+    red "\nYou need to connect to the Internet first!\n\n"
+    return 1
 fi
 
 # Select a device
