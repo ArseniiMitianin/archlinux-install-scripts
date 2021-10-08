@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/zsh
 
 device=$1
+is_uefi=$2
 
 # Colors
 function white  { tput sgr 0; }
@@ -30,7 +31,7 @@ locale-gen                                    # Generale locales
 echo LANG=en_US.UTF-8 > /etc/locale.conf      # Set the environment variable
 
 # Set the hostname
-yellow "\nEnter your hostname >  "
+yellow "\nEnter your hostname > "
 read hostname
 echo $hostname > /etc/hostname
 echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$hostname.localdomain\t$hostname" > /etc/hosts
@@ -46,7 +47,7 @@ passwd mitianin
 EDITOR=nvim visudo
 
 # Enabling services
-yellow "\nIs your selected drive an SSD? [y/n] >  "
+yellow "\nIs your selected drive an SSD? [y/n] > "
 read answer
 if [[ $answer == 'y' || $answer == 'Y' ]]; then
     green "  --> Enabling TRIM\n"
@@ -61,10 +62,17 @@ configure_pacman
 
 # Configuring GRUB
 cyan "Installing and configuring GRUB\n"
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck # Install GRUB
-sed -i 's/ \<quiet\>//g' /etc/default/grub                                            # Disable quiet boot
+
+# Install GRUB
+if [[ $is_uefi ]]; then
+    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck
+else
+    grub-install $device
+fi
+
+sed -i 's/ \<quiet\>//g' /etc/default/grub # Disable quiet boot
 
 # Set up suspend-on-disk (hibernation)
-sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\" ?$/ resume=UUID=$(blkid -s UUID -o value ${device}2)\"/" /etc/default/grub
+sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\" *$/ resume=UUID=$(blkid -s UUID -o value ${device}2)\"/" /etc/default/grub
 
 grub-mkconfig -o /boot/grub/grub.cfg # Generate the config file
