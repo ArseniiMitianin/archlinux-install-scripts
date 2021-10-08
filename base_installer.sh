@@ -28,7 +28,7 @@ function configure_pacman {
 function launch {
     cp $HOME/$1 /mnt
     chmod +x /mnt/$1
-    arch-chroot /mnt ./$1 $2
+    arch-chroot /mnt ./$1 $2 $3
     rm "/mnt/$1"
 }
 
@@ -110,7 +110,7 @@ pacstrap -i /mnt base base-devel linux linux-firmware $(cpu)-ucode man-db man-pa
 cyan "Generating the file system table\n"
 genfstab -U /mnt >> /mnt/etc/fstab # Generate the file system table
 
-launch "config.sh" $is_uefi # Configuration
+launch "config.sh" $device $is_uefi # Configuration
 
 # Desktop installation (optional)
 yellow "Which desktop do you want to install?\n"
