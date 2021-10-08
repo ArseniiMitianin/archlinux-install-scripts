@@ -72,7 +72,7 @@ timedatectl set-ntp true # Synchronize the clock
 # Partitioning the drive
 cyan "Partitioning your drive\n"
 if [[ $is_uefi ]]; then
-    green "  --> The system is booted in UEFI mode. Creating a GPT partition scheme."
+    green "  --> The system is booted in UEFI mode. Creating a GPT partition scheme\n"
     parted --script $device \
         mklabel gpt \
         mkpart "boot" fat32 1MiB 501MiB \
@@ -80,7 +80,7 @@ if [[ $is_uefi ]]; then
         mkpart "swap" linux-swap 501MiB 16.5GiB \
         mkpart "root" ext4 16.5GiB 100%
 else
-    green "  --> The system is booted in BIOS mode. Creating an MBR partition scheme."
+    green "  --> The system is booted in BIOS mode. Creating an MBR partition scheme\n"
     parted --script $device \
         mklabel msdos \
         mkpart primary ext4 1MiB 501MiB \
