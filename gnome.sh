@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # Colors
 function white  { tput sgr 0; }
