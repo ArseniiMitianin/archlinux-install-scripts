@@ -32,6 +32,10 @@ function launch {
     rm "/mnt/$1"
 }
 
+# Check if the live env is booted in UEFI mode
+# Needed for disk partitioning + bootloader configuration
+is_uefi = $(ls /sys/firmware/efi/efivars)
+
 # Connect to the Internet
 if [[ $(ip a | egrep 'enp.*:.*state UP')]]; then
     green "\nFound an Ethernet connection!\n\n"
@@ -67,12 +71,23 @@ timedatectl set-ntp true # Synchronize the clock
 
 # Partitioning the drive
 cyan "Partitioning your drive\n"
-parted --script $device \
-    mklabel gpt \
-    mkpart "boot" fat32 1MiB 501MiB \
-    set 1 esp on \
-    mkpart "swap" linux-swap 501MiB 16.5GiB \
-    mkpart "root" ext4 16.5GiB 100%
+if [[ $is_uefi ]]; then
+    green "  --> The system is booted in UEFI mode. Creating a GPT partition scheme."
+    parted --script $device \
+        mklabel gpt \
+        mkpart "boot" fat32 1MiB 501MiB \
+        set 1 esp on \
+        mkpart "swap" linux-swap 501MiB 16.5GiB \
+        mkpart "root" ext4 16.5GiB 100%
+else
+    green "  --> The system is booted in BIOS mode. Creating an MBR partition scheme."
+    parted --script $device \
+        mklabel msdos \
+        mkpart primary ext4 1MiB 501MiB \
+        set 1 boot on \
+        mkpart primary linux-swap 501MiB 16.5GiB \
+        mkpart primary ext4 16.5GiB 100%
+fi
 
 # Formatting partitions
 cyan "Formatting partitions\n"
@@ -95,7 +110,7 @@ pacstrap -i /mnt base base-devel linux linux-firmware $(cpu)-ucode man-db man-pa
 cyan "Generating the file system table\n"
 genfstab -U /mnt >> /mnt/etc/fstab # Generate the file system table
 
-launch "config.sh" # Configuration
+launch "config.sh" $is_uefi # Configuration
 
 # Desktop installation (optional)
 yellow "Which desktop do you want to install?\n"
