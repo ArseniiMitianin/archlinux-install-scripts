@@ -34,7 +34,7 @@ function launch {
 
 # Check if the live env is booted in UEFI mode
 # Needed for disk partitioning + bootloader configuration
-is_uefi = $(ls /sys/firmware/efi/efivars)
+is_uefi=$(ls /sys/firmware/efi/efivars)
 
 # Connect to the Internet
 if [[ $(ip a | egrep 'enp.*:.*state UP')]]; then
