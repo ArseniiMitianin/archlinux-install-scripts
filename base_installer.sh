@@ -37,7 +37,7 @@ function launch {
 is_uefi=$(ls /sys/firmware/efi/efivars)
 
 # Connect to the Internet
-if [[ $(ip a | egrep 'enp.*:.*state UP')]]; then
+if [[ $(ip a | egrep 'enp.*:.*state UP') ]]; then
     green "\nFound an Ethernet connection!\n\n"
 elif [[ $(ip a | egrep '(wlan|wlp).*:.*state UP') ]]; then
     green "\nFound a Wi-Fi connection!\n\n"
