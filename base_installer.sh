@@ -34,7 +34,8 @@ function launch {
 
 # Check if the live env is booted in UEFI mode
 # Needed for disk partitioning + bootloader configuration
-is_uefi=$(ls /sys/firmware/efi/efivars &> /dev/null)
+ls /sys/firmware/efi/efivars &> /dev/null
+is_uefi=$?
 
 # Connect to the Internet
 if [[ $(ip a | egrep 'enp.*:.*state UP') ]]; then
@@ -71,7 +72,7 @@ timedatectl set-ntp true # Synchronize the clock
 
 # Partitioning the drive
 cyan "Partitioning your drive\n"
-if [[ $is_uefi ]]; then
+if [[ $is_uefi -eq 0 ]]; then
     green "  --> The system is booted in UEFI mode. Creating a GPT partition scheme\n"
     parted --script $device \
         mklabel gpt \

@@ -64,7 +64,7 @@ configure_pacman
 cyan "Installing and configuring GRUB\n"
 
 # Install GRUB
-if [[ $is_uefi ]]; then
+if [[ $is_uefi -eq 0 ]]; then
     grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck
 else
     grub-install $device
