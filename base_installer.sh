@@ -91,7 +91,7 @@ fi
 
 # Formatting partitions
 cyan "Formatting partitions\n"
-mkfs.vfat "${device}1" &> /dev/null
+mkfs.fat -F32 "${device}1" &> /dev/null
 mkswap "${device}2" &> /dev/null
 swapon "${device}2" &> /dev/null
 mkfs.ext4 "${device}3" &> /dev/null
