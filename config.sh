@@ -25,10 +25,10 @@ hwclock --systohc
 
 # Set the locale
 cyan "Setting the locales\n"
-sed '/en_US.UTF-8/s/^#//g' -i /etc/locale.gen # Select American English
-sed '/ru_RU.UTF-8/s/^#//g' -i /etc/locale.gen # Select Russian
-locale-gen                                    # Generale locales
-echo LANG=en_US.UTF-8 > /etc/locale.conf      # Set the environment variable
+sed -i '177s/.//' /etc/locale.gen        # Select American English
+sed -i '403s/.//' /etc/locale.gen        # Select Russian
+locale-gen                               # Generale locales
+echo LANG=en_US.UTF-8 > /etc/locale.conf # Set the environment variable
 
 # Set the hostname
 yellow "\nEnter your hostname > "
