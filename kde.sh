@@ -29,7 +29,7 @@ packages=()
 
 case $video_driver in
     a) packages+=('mesa' 'xf86-video-amdgpu' 'amdvlk') ;;
-    n) packages+=('nvidia' 'nvidia-utils') ;;
+    n) packages+=('nvidia' 'nvidia-utils' 'nvidia-settings') ;;
     i) packages+=('mesa' 'xf86-video-intel' 'vulkan-intel') ;;
     v) packages+=('mesa' 'xf86-video-vmware') ;;
 esac
