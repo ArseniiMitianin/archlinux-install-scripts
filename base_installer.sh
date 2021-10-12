@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-# Launch this script on a UEFI system
-
 # Colors
 function white  { tput sgr 0; }
 function red    { tput setaf 1; echo -en $1; white; }
