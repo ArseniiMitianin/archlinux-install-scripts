@@ -9,6 +9,9 @@ Currently these scripts can do a base install Arch Linux with my preferred confi
 Optional desktop install available.
 
 ## TODOs
+### Features
+- [ ] Interaction through TUI windows with `dialog`
+
 ### Things that are definitely needed
 - [x] Desktops (X.Org + Wayland):
   - [x] KDE
