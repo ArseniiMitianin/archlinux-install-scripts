@@ -10,7 +10,7 @@ Optional desktop install available.
 
 ## TODOs
 ### Features
-- [ ] Interaction through TUI windows with `dialog`
+- [x] Interaction through TUI windows with `dialog` (in prompts)
 
 ### Things that are definitely needed
 - [x] Desktops (X.Org + Wayland):
