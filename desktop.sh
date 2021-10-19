@@ -26,7 +26,7 @@ case $desktop in
         packages+=(
             plasma plasma-wayland-session sddm dolphin konsole kolourpaint elisa gwenview okular
             ktouch kcharselect discover libdbusmenu-glib libdbusmenu-gtk2
-            libdbusmenu-gtk3 libdbusmenu-qt5 packagekit-qt5
+            libdbusmenu-gtk3 libdbusmenu-qt5 packagekit-qt5 xorg-xrandr
         )
 
         if [[ $driver == 'nvidia' ]]; then packages+=(egl-wayland); fi
