@@ -11,6 +11,11 @@
 
 source functions.sh
 
+function ram_amount {
+    # Found the ceiling function here: https://stackoverflow.com/a/67355334
+    echo $(awk 'function ceil(x) { return int(x + (1 - 1e-15)); } /MemTotal/ { gibs = ceil($2 / (1024^2)); print gibs }' /proc/meminfo)
+}
+
 ########################################################################################################################
 # MAIN SCRIPT                                                                                                          #
 ########################################################################################################################
@@ -99,22 +104,26 @@ timedatectl set-ntp true # Synchronize the clock with the Internet
 
 # Partitioning the drive
 cyan "Partitioning your drive\n"
+
+# The boot partition will take 500 MiB, so add that offset to swap's higher bound
+swap_end=$(( $(ram_amount) + 0.5 ))
+
 if [[ $is_uefi -eq 0 ]]; then
     green "  --> The system is booted in UEFI mode. Creating a GPT partition scheme\n"
     parted --script $device \
         mklabel gpt \
         mkpart "boot" fat32 1MiB 501MiB \
         set 1 esp on \
-        mkpart "swap" linux-swap 501MiB 16.5GiB \
-        mkpart "root" ext4 16.5GiB 100%
+        mkpart "swap" linux-swap 501MiB ${swap_end}GiB \
+        mkpart "root" ext4 ${swap_end}GiB 100%
 else
     green "  --> The system is booted in BIOS mode. Creating an MBR partition scheme\n"
     parted --script $device \
         mklabel msdos \
         mkpart primary ext4 1MiB 501MiB \
         set 1 boot on \
-        mkpart primary linux-swap 501MiB 16.5GiB \
-        mkpart primary ext4 16.5GiB 100%
+        mkpart primary linux-swap 501MiB ${swap_end}GiB \
+        mkpart primary ext4 ${swap_end}GiB 100%
 fi
 
 # Formatting partitions
