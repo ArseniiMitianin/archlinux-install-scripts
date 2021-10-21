@@ -2,7 +2,7 @@
 Currently these scripts can do a base install Arch Linux with my preferred configs:
 - Hard drive:
     - `/boot`: 500 MiB (UEFI - FAT32, BIOS - Ext4)
-    - Swap: 16 GiB (needed for suspend-on-disk/hibernation)
+    - Swap: Same amount as RAM (needed for suspend-on-disk/hibernation)
     - `/`: Rest of free space Ext4
 - Shell: Zsh
 
