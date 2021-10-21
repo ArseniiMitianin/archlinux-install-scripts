@@ -162,49 +162,7 @@ launch config.sh $device $is_uefi
 
 
 # Installing a DE
-desktops=(
-    gnome 'GNOME Desktop (X.Org + Wayland)' 'off'
-    kde 'KDE (X.Org + Wayland)' 'off'
-)
-
-selected_desktops=$(
-    dialog --keep-tite --stdout \
-    --backtitle "Arch Linux Installer" \
-    --title "System Installation" \
-    --checklist "Select any desktop environments you'd like to install. If you choose none, this section will be skipped" \
-    20 61 10 \
-    ${desktops[@]}
-)
-
-if [[ ! -z $selected_desktops ]]; then
-    echo $selected_desktops | read -A desktop_list
-
-    drivers=(
-        nvidia 'Proprietary NVidia graphics driver' 'off'
-        amdgpu 'Open-source AMD graphics driver' 'off'
-        intel  'Open-source Intel graphics driver' 'off'
-        vmware 'Open-source graphics driver for virtual machines' 'off'
-    )
-
-    declare selected_driver
-    until [[ ! -z $selected_driver ]]; do
-        selected_driver=$(
-            dialog --keep-tite --stdout --nocancel \
-            --backtitle "Arch Linux Installer" \
-            --title "System Installation" \
-            --radiolist "Select a driver for your GPU." \
-            20 67 10 \
-            ${drivers[@]}
-        )
-    done
-
-    for desktop in $selected_desktops; do
-        launch desktop.sh $desktop $selected_driver
-    done
-else
-    clear
-    cyan "No desktop selected. Skipping.\n\n"
-fi
+launch desktop.sh
 
 ########################################################################################################################
 # DONE!                                                                                                                #
