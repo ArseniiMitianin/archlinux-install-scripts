@@ -18,7 +18,7 @@ selected_desktop=$(
 
 if [[ ! -z $selected_desktop ]]; then
     drivers=(
-        nvidia 'Proprietary NVidia graphics driver' 'off'
+        nvidia 'Proprietary Nvidia graphics driver' 'off'
         amdgpu 'Open-source AMD graphics driver' 'off'
         intel  'Open-source Intel graphics driver' 'off'
         vmware 'Open-source graphics driver for virtual machines' 'off'
@@ -39,7 +39,7 @@ if [[ ! -z $selected_desktop ]]; then
     # Adding video driver packages
     packages=(mesa)
     case $selected_driver in
-        nvidia) packages+=(nvidia nvidia-utils nvidia-settings) ;;
+        nvidia) packages+=(nvidia nvidia-utils lib32-nvidia-utils nvidia-settings) ;;
         amdgpu) packages+=(xf86-video-amdgpu amdvlk) ;;
         intel)  packages+=(xf86-video-intel vulkan-intel) ;;
         vmware) packages+=(xf86-video-vmware) ;;
@@ -60,7 +60,7 @@ if [[ ! -z $selected_desktop ]]; then
                 libdbusmenu-gtk3 libdbusmenu-qt5 packagekit-qt5 xorg-xrandr
             )
 
-            if [[ $driver == 'nvidia' ]]; then packages+=(egl-wayland); fi
+            if [[ $selected_driver == 'nvidia' ]]; then packages+=(egl-wayland); fi
             ;;   
     esac
 
@@ -79,6 +79,35 @@ if [[ ! -z $selected_desktop ]]; then
             systemctl enable sddm &> /dev/null
             ;;
     esac
+
+    if [[ $selected_driver == 'nvidia' ]]; then
+        cyan "\nNvidia driver installed. Configuring\n"
+        
+        green "Enabling DRM kernel mode setting\n"
+        sed -i "/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/\" *$/ nvidia-drm.modeset=1\"/" /etc/default/grub
+        grub-mkconfig -o /boot/grub/grub.cfg
+
+        green "\nAdding kernel modules to Initramfs\n"
+        sed -i "/^MODULES=/ s/)$/nvidia nvidia_modeset nvidia_uvm nvidia_drm)/" /etc/mkinitcpio.conf
+        mkinitcpio -P
+
+        green "\nAdding a Pacman hook\n"
+        mkdir /etc/pacman.d/hooks
+        cat << EOF | sed -e 's/^ *//' > /etc/pacman.d/hooks/nvidia.hook;
+            [Trigger]
+            Operation=Install
+            Operation=Upgrade
+            Operation=Remove
+            Type=Package
+            Target=nvidia
+
+            [Action]
+            Description=Update Nvidia modules in Initramfs
+            Depends=mkinitcpio
+            When=PostTransaction
+            Exec=/usr/bin/mkinitcpio -P
+EOF
+    fi
 else
     clear
     cyan "No desktop selected. Skipping.\n\n"
