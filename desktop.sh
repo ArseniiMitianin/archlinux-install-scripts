@@ -47,7 +47,7 @@ if [[ ! -z $selected_desktop ]]; then
 
     # Adding packages for the desktop environment
     packages+=(xf86-input-libinput xf86-input-elographics xf86-input-synaptics vivaldi vivaldi-ffmpeg-codecs)
-    case $desktop in
+    case $selected_desktop in
         gnome)
             packages+=(
                 gnome gnome-tweaks gnome-shell-extensions gnome-software-packagekit-plugin
@@ -66,10 +66,10 @@ if [[ ! -z $selected_desktop ]]; then
 
     # Install everything
     pacman -S --noconfirm --needed ${packages[@]}
-    if [[ $desktop == 'gnome' ]]; then pacman -Rns --noconfirm epiphany; fi # Already have Vivaldi, no need for GNOME's browser
+    if [[ $selected_desktop == 'gnome' ]]; then pacman -Rns --noconfirm epiphany; fi # Already have Vivaldi, no need for GNOME's browser
 
     # Enabling the Display Manager
-    case $desktop in
+    case $selected_desktop in
         gnome)
             green "\nEnabling GNOME Display Manager\n\n"
             systemctl enable gdm.service &> /dev/null
