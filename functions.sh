@@ -73,7 +73,7 @@ function continue_or_cancel {
     if [[ ! $status_code -eq 0 ]]; then
         cancel $status_code
     elif [[ -z $value ]]; then
-        red "$error_text. Installantion aborted.\n\n"
+        red "$error_text. Installation aborted.\n\n"
         exit 1
     fi
 }
