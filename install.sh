@@ -86,17 +86,30 @@ lsblk -ndPo PATH,MODEL,SIZE,VENDOR,TYPE | \
 source /etc/profile
 
 # Drive selection
-device=$(
-    dialog --keep-tite --stdout \
-    --backtitle "Arch Linux Installer" \
-    --title "System Installation" \
-    --radiolist "The operating system will be installed on the disk you've selected." \
-    20 61 10 \
-    ${disks[@]}
-)
-disk_select_status=$?
+declare device
+declare select_confirmed=1
+until [[ -n $device && $select_confirmed -eq 0 ]]; do
+    device=$(
+        dialog --keep-tite --colors --stdout \
+        --backtitle "Arch Linux Installer" \
+        --title "System Installation" \
+        --radiolist "The operating system will be installed on the disk you've selected.\nPress \Z4Cancel\Zn or \Z4Esc\Zn to exit." \
+        20 61 10 \
+        ${disks[@]}
+    )
+    disk_selected=$?
+    
+    continue_or_cancel $disk_selected "$device" "No disk was selected"
 
-continue_or_cancel $disk_select_status "$device" "No disk was selected"
+    dialog --keep-tite --colors --stdout \
+        --backtitle "Arch Linux Installer" \
+        --title "System Installation" \
+        --yesno "Are you sure you want to install the system on \Z1$device\Zn? All data on that drive will be destroyed." \
+        6 61
+    select_confirmed=$?
+done
+
+clear
 green "Disk selected: $device\n\n"
 
 cyan "Synchronizing your clock with the Internet\n"
