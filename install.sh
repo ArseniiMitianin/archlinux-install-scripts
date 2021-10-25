@@ -141,16 +141,29 @@ fi
 
 # Formatting partitions
 cyan "Formatting partitions\n"
-mkfs.fat -F32 "${device}1" &> /dev/null
-mkswap "${device}2" &> /dev/null
-swapon "${device}2" &> /dev/null
-mkfs.ext4 "${device}3" &> /dev/null
+if [[ $device =~ 'nvme' ]]; then
+    mkfs.fat -F32 "${device}p1" &> /dev/null
+    mkswap "${device}p2" &> /dev/null
+    swapon "${device}p2" &> /dev/null
+    mkfs.ext4 "${device}p3" &> /dev/null
+else
+    mkfs.fat -F32 "${device}1" &> /dev/null
+    mkswap "${device}2" &> /dev/null
+    swapon "${device}2" &> /dev/null
+    mkfs.ext4 "${device}3" &> /dev/null
+fi
 
 # Mounting partitions
 cyan "Mounting partitions\n"
-mount "${device}3" /mnt
-mkdir /mnt/boot
-mount "${device}1" /mnt/boot
+if [[ $device =~ 'nvme' ]]; then
+    mount "${device}p3" /mnt
+    mkdir /mnt/boot
+    mount "${device}p1" /mnt/boot
+elif
+    mount "${device}3" /mnt
+    mkdir /mnt/boot
+    mount "${device}1" /mnt/boot
+fi
 
 # Installing
 packages=(
