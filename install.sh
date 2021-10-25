@@ -159,7 +159,7 @@ if [[ $device =~ 'nvme' ]]; then
     mount "${device}p3" /mnt
     mkdir /mnt/boot
     mount "${device}p1" /mnt/boot
-elif
+else
     mount "${device}3" /mnt
     mkdir /mnt/boot
     mount "${device}1" /mnt/boot
