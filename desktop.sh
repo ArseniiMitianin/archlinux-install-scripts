@@ -20,7 +20,7 @@ if [[ -n $selected_desktop ]]; then
     clear
 
     # Grabbing the information about the graphics card
-    vga_device=$(lspci -k | grep -E '(VGA|3D|2D)')
+    vga_device=$(lspci | grep -E '(VGA|3D|2D)')
 
     # Checking the GPU vendor and adding packages
     packages=(mesa)
