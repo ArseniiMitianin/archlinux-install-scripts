@@ -6,6 +6,7 @@
 function white  { tput sgr 0; }
 function red    { tput bold; tput setaf 1; echo -en $1; white; }
 function green  { tput bold; tput setaf 2; echo -en $1; white; }
+function blue   { tput bold; tput setaf 4; echo -en $1; white; }
 function yellow { tput bold; tput setaf 3; echo -en $1; white; }
 function cyan   { tput bold; tput setaf 6; echo -en $1; white; }
 

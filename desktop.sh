@@ -16,33 +16,27 @@ selected_desktop=$(
     ${desktops[@]}
 )
 
-if [[ ! -z $selected_desktop ]]; then
-    drivers=(
-        nvidia 'Proprietary Nvidia graphics driver' 'off'
-        amdgpu 'Open-source AMD graphics driver' 'off'
-        intel  'Open-source Intel graphics driver' 'off'
-        vmware 'Open-source graphics driver for virtual machines' 'off'
-    )
+if [[ -n $selected_desktop ]]; then
+    clear
 
-    declare selected_driver
-    until [[ ! -z $selected_driver ]]; do
-        selected_driver=$(
-            dialog --keep-tite --stdout --nocancel \
-            --backtitle "Arch Linux Installer" \
-            --title "Desktop Installation" \
-            --radiolist "Select a driver for your GPU." \
-            20 67 10 \
-            ${drivers[@]}
-        )
-    done
+    # Grabbing the information about the graphics card
+    vga_device=$(lspci -k | grep -E '(VGA|3D|2D)')
 
-    # Adding video driver packages
+    # Checking the GPU vendor and adding packages
     packages=(mesa)
-    case $selected_driver in
-        nvidia) packages+=(nvidia nvidia-utils lib32-nvidia-utils nvidia-settings) ;;
-        amdgpu) packages+=(xf86-video-amdgpu amdvlk) ;;
-        intel)  packages+=(xf86-video-intel vulkan-intel) ;;
-        vmware) packages+=(xf86-video-vmware) ;;
+    case $vga_device in
+        *NVIDIA*  ) 
+            green 'Found an Nvidia graphics card!\n\n'
+            packages+=(nvidia nvidia-utils lib32-nvidia-utils nvidia-settings) ;;
+        *AMD/ATI* )
+            red 'Found an AMD graphics card!\n\n'
+            packages+=(xf86-video-amdgpu amdvlk)                               ;;
+        *Intel*   )
+            blue 'Found an Intel graphics card!\n\n'
+            packages+=(xf86-video-intel vulkan-intel)                          ;;
+        *VMware*  )
+            cyan 'Found a graphics adapter for virtual machines!\n\n'
+            packages+=(xf86-video-vmware)                                      ;;
     esac
 
     # Adding packages for the desktop environment
@@ -60,7 +54,7 @@ if [[ ! -z $selected_desktop ]]; then
                 libdbusmenu-gtk3 libdbusmenu-qt5 packagekit-qt5 xorg-xrandr
             )
 
-            if [[ $selected_driver == 'nvidia' ]]; then packages+=(egl-wayland); fi
+            if [[ $vga_device =~ 'NVIDIA' ]]; then packages+=(egl-wayland); fi
             ;;   
     esac
 
@@ -80,7 +74,7 @@ if [[ ! -z $selected_desktop ]]; then
             ;;
     esac
 
-    if [[ $selected_driver == 'nvidia' ]]; then
+    if [[ $vga_device =~ 'NVIDIA' ]]; then
         cyan "\nNvidia driver installed. Configuring\n"
         
         green "Enabling DRM kernel mode setting\n"
