@@ -9,7 +9,7 @@ function prompt {
     local text=$1
 
     local value=""
-    until [[ ! -z $value ]]; do
+    until [[ -n $value ]]; do
         value=$(
             dialog --keep-tite --stdout --nocancel \
             --backtitle "Arch Linux Installer" \
