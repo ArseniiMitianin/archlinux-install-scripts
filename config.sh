@@ -98,10 +98,11 @@ clear
 cyan "Creating user account '$username'\n"
 useradd -mG users,wheel -s /bin/zsh $username
 passwd $username
-EDITOR=nvim visudo
+
+green "\nEnabling 'sudo' for the 'wheel' group\n"
+sed -i '82s/..//' /etc/sudoers
 
 # Enabling services
-clear
 
 # Checking if the hard drive is an SSD by looking at its block discard capabilities
 disc_gran=$(lsblk -ndDPo DISC-GRAN $device | awk -F '"' '{ print $2 }')
