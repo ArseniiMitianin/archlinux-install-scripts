@@ -101,21 +101,12 @@ passwd $username
 EDITOR=nvim visudo
 
 # Enabling services
-disk_name=$(
-    lsblk -ndPo PATH,MODEL,VENDOR | \
-    grep $device | \
-    awk -F'"' '{gsub(/ /, "", $6); printf $6 " "; printf $4 " at "; printf $2 "\n"}'
-)
-
-dialog --colors --keep-tite --stdout \
-    --backtitle "Arch Linux Installer" \
-    --title "System Configuration" \
-    --yesno "Is \Z1$disk_name\Zn an SSD?" \
-    7 62
-is_ssd=$?
-
 clear
-if [[ $is_ssd -eq 0 ]]; then
+
+# Checking if the hard drive is an SSD by looking at its block discard capabilities
+disc_gran=$(lsblk -ndDPo DISC-GRAN $device | awk -F '"' '{ print $2 }')
+disc_max=$(lsblk -ndDPo DISC-MAX $device | awk -F '"' '{ print $2 }')
+if [[ $disc_gran != '0B' && $disc_max != '0B' ]]; then
     green "Enabling weekly TRIM\n"
     systemctl enable fstrim.timer &> /dev/null
 fi
