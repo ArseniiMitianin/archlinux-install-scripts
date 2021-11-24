@@ -8,9 +8,24 @@ Currently these scripts can do a base install Arch Linux with my preferred confi
 
 Optional desktop install available.
 
+## How to run 
+
+*This section is here in case if someone stumbles upon this repo. You never know. ¯\\\_(ツ)\_/¯*
+
+The repository can be downloaded and launched by running these commands in the terminal (you need to have `git` installed):
+```bash
+git clone https://github.com/ArseniiMitianin/archlinux-install-scripts.git
+cd archlinux-install-scripts
+chmod +x install.sh
+./install.sh
+```
+
 ## TODOs
 ### Features
 - [x] Interaction through TUI windows with `dialog` (in prompts)
+- [ ] Add multi-GPU detection, installation of Optimus Manager for Nvidia
+- [ ] Add a locale selector
+- [ ] Add a timezone selector
 
 ### Things that are definitely needed
 - [x] Desktops (X.Org + Wayland):
