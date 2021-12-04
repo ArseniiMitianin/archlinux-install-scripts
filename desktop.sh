@@ -40,7 +40,10 @@ if [[ -n $selected_desktop ]]; then
     esac
 
     # Adding packages for the desktop environment
-    packages+=(xf86-input-libinput xf86-input-elographics xf86-input-synaptics vivaldi vivaldi-ffmpeg-codecs)
+    packages+=(
+        easyeffects pipewire-pulse pipewire-jack pipewire-alsa
+        xf86-input-libinput xf86-input-elographics xf86-input-synaptics vivaldi vivaldi-ffmpeg-codecs
+    )
     case $selected_desktop in
         gnome)
             packages+=(
