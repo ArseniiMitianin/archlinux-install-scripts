@@ -30,7 +30,7 @@ if [[ -n $selected_desktop ]]; then
             packages+=(nvidia nvidia-utils lib32-nvidia-utils nvidia-settings) ;;
         *AMD/ATI* )
             red 'Found an AMD graphics card!\n\n'
-            packages+=(xf86-video-amdgpu amdvlk)                               ;;
+            packages+=(xf86-video-amdgpu vulkan-radeon amdvlk)                 ;;
         *Intel*   )
             blue 'Found an Intel graphics card!\n\n'
             packages+=(xf86-video-intel vulkan-intel)                          ;;
