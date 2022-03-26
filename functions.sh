@@ -35,7 +35,7 @@ function launch {
     local arg1=$2
     local arg2=$3
 
-    cp $HOME/$filename /mnt
+    cp $filename /mnt
     chmod +x /mnt/$filename
     arch-chroot /mnt ./$filename $arg1 $arg2
     rm "/mnt/$filename"
